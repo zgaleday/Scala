@@ -41,9 +41,9 @@ object Lists {
    */
     def max(xs: List[Int]): Int = {
       if (xs.isEmpty) throw new NoSuchElementException()
-      def maxInt(a: Int, b: List[Int]) = {
-        if (b.isEmpty) a else if (a > b.head) a else b.head
+      def maxList(a: Int, b: List[Int]): Int = {
+        if (b.isEmpty) a else if (a > b.head) maxList(a, b.drop(1)) else maxList(b.head, b.drop(1))
       }
-      maxInt(xs.head, xs.drop(1))
+      maxList(xs.head, xs.drop(1))
     }
   }

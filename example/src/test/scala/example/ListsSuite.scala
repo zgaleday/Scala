@@ -118,7 +118,7 @@ import org.scalatest.junit.JUnitRunner
   }
 
   test("max of a few numbers") {
-    assert(max(List(3, 7, 2)) === 7)
+    assert(max(List(3, 2, 7)) === 7)
   }
 
 
