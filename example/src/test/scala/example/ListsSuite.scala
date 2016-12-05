@@ -4,6 +4,7 @@ import org.scalatest.FunSuite
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import java.util.NoSuchElementException
 
 /**
  * This class implements a ScalaTest test suite for the methods in object
@@ -121,6 +122,15 @@ import org.scalatest.junit.JUnitRunner
     assert(max(List(3, 2, 7)) === 7)
   }
 
+  test("sum empty list") {
+    assert(sum(List()) === 0)
+  }
+
+  test("max of empty list") {
+    intercept[NoSuchElementException] {
+      max(List())
+    }
+  }
 
 
 }
