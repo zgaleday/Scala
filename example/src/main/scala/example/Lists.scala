@@ -1,4 +1,5 @@
 package example
+import java.util.NoSuchElementException
 
 
 object Lists {
@@ -38,5 +39,11 @@ object Lists {
    * @return The largest element in `xs`
    * @throws java.util.NoSuchElementException if `xs` is an empty list
    */
-    def max(xs: List[Int]): Int = ???
+    def max(xs: List[Int]): Int = {
+      if (xs.isEmpty) throw new NoSuchElementException()
+      def maxInt(a: Int, b: List[Int]) = {
+        if (b.isEmpty) a else if (a > b.head) a else b.head
+      }
+      maxInt(xs.head, xs.drop(1))
+    }
   }
