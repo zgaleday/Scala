@@ -20,7 +20,16 @@ object Main {
   /**
    * Exercise 2
    */
-    def balance(chars: List[Char]): Boolean = ???
+    def balance(chars: List[Char]): Boolean = {
+      def findParens(open: Int, close: Int, chars: List[Char]): Boolean = {
+        if (chars.isEmpty) close == open
+        else if (close > open) { false }
+        else if (chars.head == '(') { findParens(open + 1, close, chars.tail) }
+        else if (chars.head == ')') { findParens(open, close + 1, chars.tail) }
+        else { findParens(open, close, chars.tail) }
+      }
+      findParens(0, 0, chars)
+    }
   
   /**
    * Exercise 3
