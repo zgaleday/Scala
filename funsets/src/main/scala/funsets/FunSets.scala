@@ -57,7 +57,7 @@ object FunSets {
     def forall(s: Set, p: Int => Boolean): Boolean = {
       def iter(a: Int): Boolean = {
         if (a > 1000) true
-        else if (s(a) != p(a)) false
+        else if (s(a)) p(a) && iter(a + 1)
         else iter(a + 1)
 
       }
@@ -71,7 +71,7 @@ object FunSets {
     def exists(s: Set, p: Int => Boolean): Boolean = {
       def iter(a: Int): Boolean = {
         if (a > 1000) false
-        else if (s(a) == p(a)) true
+        else if (s(a)) forall((x: Int) => x == a, p) || iter(a + 1)
         else iter(a + 1)
       }
       iter(-1000)
