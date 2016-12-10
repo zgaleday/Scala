@@ -114,6 +114,7 @@ class FunSetSuite extends FunSuite {
     new TestSets{
       assert(forall(s1, (x: Int) => x == 1), "singleton sets should be equal")
       assert(!forall(s1, (x: Int) => x == 2), "singleton sets not be equal")
+      assert(contains(map(s1, (x: Int) => x * 2), 2))
     }
   }
 
