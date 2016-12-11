@@ -65,7 +65,13 @@ abstract class TweetSet {
     * Question: Should we implment this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet = {
+    val maxTweet = max(new Tweet("", "", -1))
+    if (maxTweet.retweets == -1) throw new NoSuchElementException
+    else maxTweet
+  }
+
+  def max(x: Tweet): Tweet
 
   /**
     * Returns a list containing all tweets of this set, sorted by retweet count
@@ -76,7 +82,7 @@ abstract class TweetSet {
     * Question: Should we implment this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList
 
   /**
     * The following methods are already implemented
@@ -113,6 +119,9 @@ class Empty extends TweetSet {
     * The following methods are already implemented
     */
 
+
+  def descendingByRetweet: TweetList = Nil
+
   def contains(tweet: Tweet): Boolean = false
 
   def incl(tweet: Tweet): TweetSet = new NonEmpty(tweet, new Empty, new Empty)
@@ -120,6 +129,8 @@ class Empty extends TweetSet {
   def remove(tweet: Tweet): TweetSet = this
 
   def foreach(f: Tweet => Unit): Unit = ()
+
+  def max(x: Tweet): Tweet = x
 
   override def union(that: TweetSet): TweetSet = that
 }
@@ -132,9 +143,20 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
   }
 
+  def descendingByRetweet: TweetList = {
+    val max = mostRetweeted
+    new Cons(max, remove(max).descendingByRetweet)
+  }
+
+  def max(x: Tweet): Tweet = {
+    if (elem.retweets > x.retweets) right max (left max elem)
+    else right max (left max x)
+  }
+
   override def union(that: TweetSet): TweetSet = {
     (that union (left union right)) incl elem
   }
+
   /**
     * The following methods are already implemented
     */
@@ -207,4 +229,6 @@ object GoogleVsApple {
 object Main extends App {
   // Print the trending tweets
   GoogleVsApple.trending foreach println
+
 }
+
