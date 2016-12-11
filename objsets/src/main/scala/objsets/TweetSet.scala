@@ -156,7 +156,6 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     if (p(elem)) {
-      println("add")
       val newAcc = acc incl elem
       if (elem.text < "l") {
         val finalAcc = right.filterAcc(p, newAcc) union left.filterAcc(p, new Empty)
@@ -165,7 +164,6 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
       }
       else {
         val finalAcc = right.filterAcc(p, new Empty) union left.filterAcc(p, newAcc)
-        println("add done")
         finalAcc
       }
 
@@ -280,25 +278,20 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  val googleTweets: TweetSet = {
-    def iter(set: TweetSet): TweetSet = {
-      if (google.nonEmpty) {
-        val tempSet = TweetReader.allTweets.filter((x: Tweet) => x.text.contains(google.head))
-        val newSet = set union tempSet
-        iter(newSet)
-      }
+  lazy val googleTweets: TweetSet = {
+    def iter(set: TweetSet, goog: List[String]): TweetSet = {
+      if (goog.nonEmpty) iter(TweetReader.allTweets.filterAcc((x: Tweet) => x.text.contains(goog.head), set), goog.tail)
       else set
     }
-    iter(new Empty)
+    iter(new Empty, google)
   }
-  println("done")
 
   lazy val appleTweets: TweetSet = {
-    def iter(set: TweetSet): TweetSet = {
-      if (apple.nonEmpty) iter(set union TweetReader.allTweets.filter((x: Tweet) => x.text.contains(apple.head)))
+    def iter(set: TweetSet, goog: List[String]): TweetSet = {
+      if (goog.nonEmpty) iter(TweetReader.allTweets.filterAcc((x: Tweet) => x.text.contains(goog.head), set), goog.tail)
       else set
     }
-    iter(new Empty)
+    iter(new Empty, apple)
   }
 
   /**

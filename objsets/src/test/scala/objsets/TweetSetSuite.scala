@@ -74,8 +74,10 @@ class TweetSetSuite extends FunSuite {
 
   test("large filter") {
     new TestSets {
-      val myTweets = TweetReader.allTweets.filter((x: Tweet) => x.text.contains("android"))
-      assert(!myTweets.isEmpty)
+      val googTweets = GoogleVsApple.googleTweets
+      val appleTweets = GoogleVsApple.appleTweets
+      val unionTweets = googTweets union appleTweets
+      assert(!unionTweets.isEmpty)
     }
   }
 }
