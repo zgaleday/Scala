@@ -144,7 +144,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     if (p(elem)) {
       val myAcc = acc incl elem
-      remove(elem).filterAcc(p, myAcc)
+      val newSet = remove(elem)
+      newSet.filterAcc(p, myAcc)
     }
     else remove(elem).filterAcc(p, acc)
 
@@ -162,7 +163,11 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
   override def union(that: TweetSet): TweetSet = {
     if (that.isEmpty) this
-    else (that union (left union right)) incl elem
+    else {
+      val mySet = remove(elem)
+      val myThat = that incl elem
+      mySet union myThat
+    }
   }
 
   /**
@@ -246,7 +251,10 @@ object GoogleVsApple {
     * A list of all tweets mentioning a keyword from either apple or google,
     * sorted by the number of retweets.
     */
-  lazy val trending: TweetList = (appleTweets union googleTweets).descendingByRetweet
+  lazy val trending: TweetList = {
+    val unionTweets = appleTweets union googleTweets
+    unionTweets.descendingByRetweet
+  }
 }
 
 object Main extends App {
