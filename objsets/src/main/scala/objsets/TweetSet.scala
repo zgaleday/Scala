@@ -32,7 +32,7 @@ class Tweet(val user: String, val text: String, val retweets: Int) {
   *
   * [1] http://en.wikipedia.org/wiki/Binary_search_tree
   */
-abstract class TweetSet {
+abstract class TweetSet() {
 
   /**
     * This method takes a predicate and returns a subset of all the elements
@@ -41,6 +41,8 @@ abstract class TweetSet {
     * Question: Can we implment this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
+
+
   def filter(p: Tweet => Boolean): TweetSet = filterAcc(p, new Empty)
 
   /**
@@ -112,6 +114,12 @@ abstract class TweetSet {
   def foreach(f: Tweet => Unit): Unit
 
   def isEmpty: Boolean
+
+  def beheaded: TweetSet
+
+  def removeMax(): TweetSet
+
+  def maxTweet(last: Tweet): Tweet
 }
 
 class Empty extends TweetSet {
@@ -120,7 +128,6 @@ class Empty extends TweetSet {
   /**
     * The following methods are already implemented
     */
-
 
   def descendingByRetweet: TweetList = Nil
 
@@ -136,6 +143,12 @@ class Empty extends TweetSet {
 
   def isEmpty = true
 
+  def removeMax(): TweetSet = this
+
+  def beheaded: TweetSet = this
+
+  def maxTweet(last: Tweet): Tweet = last
+
   override def union(that: TweetSet): TweetSet = that
 }
 
@@ -143,12 +156,47 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     if (p(elem)) {
-      val myAcc = acc incl elem
-      val newSet = remove(elem)
-      newSet.filterAcc(p, myAcc)
-    }
-    else remove(elem).filterAcc(p, acc)
+      println("add")
+      val newAcc = acc incl elem
+      if (elem.text < "l") {
+        val finalAcc = right.filterAcc(p, newAcc) union left.filterAcc(p, new Empty)
 
+        finalAcc
+      }
+      else {
+        val finalAcc = right.filterAcc(p, new Empty) union left.filterAcc(p, newAcc)
+        println("add done")
+        finalAcc
+      }
+
+    }
+
+    else {
+      val finalAcc = right.filterAcc(p, new Empty) union left.filterAcc(p, acc)
+      finalAcc
+    }
+  }
+
+
+  def removeMax(): TweetSet = {
+    if (right.isEmpty) {
+      this.left
+    }
+    else new NonEmpty(elem, left, right.removeMax())
+  }
+
+  def maxTweet(last: Tweet): Tweet = {
+
+    right maxTweet elem
+  }
+
+  def beheaded: TweetSet = {
+    if (!left.isEmpty) {
+      val tempTweet = left.maxTweet(new Tweet("zzzzz", "zzzz", 0))
+      val newLeft = left.removeMax()
+      new NonEmpty(tempTweet, newLeft, right)
+    }
+    else right
   }
 
   def descendingByRetweet: TweetList = {
@@ -161,12 +209,11 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     else right max (left max x)
   }
 
+
   override def union(that: TweetSet): TweetSet = {
     if (that.isEmpty) this
     else {
-      val mySet = remove(elem)
-      val myThat = that incl elem
-      mySet union myThat
+      (that union beheaded) incl elem
     }
   }
 
@@ -198,6 +245,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   }
 
   def isEmpty: Boolean = false
+
+
 }
 
 trait TweetList {
@@ -231,13 +280,18 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = {
+  val googleTweets: TweetSet = {
     def iter(set: TweetSet): TweetSet = {
-      if (google.nonEmpty) iter(set union TweetReader.allTweets.filter((x: Tweet) => x.text.contains(google.head)))
+      if (google.nonEmpty) {
+        val tempSet = TweetReader.allTweets.filter((x: Tweet) => x.text.contains(google.head))
+        val newSet = set union tempSet
+        iter(newSet)
+      }
       else set
     }
     iter(new Empty)
   }
+  println("done")
 
   lazy val appleTweets: TweetSet = {
     def iter(set: TweetSet): TweetSet = {

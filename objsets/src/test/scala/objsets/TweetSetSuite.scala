@@ -27,17 +27,18 @@ class TweetSetSuite extends FunSuite {
 
   def size(set: TweetSet): Int = asSet(set).size
 
+  test("filter: a on set5") {
+    new TestSets {
+      assert(size(set5.filter(tw => tw.user == "a")) === 1)
+    }
+  }
+
   test("filter: on empty set") {
     new TestSets {
       assert(size(set1.filter(tw => tw.user == "a")) === 0)
     }
   }
 
-  test("filter: a on set5") {
-    new TestSets {
-      assert(size(set5.filter(tw => tw.user == "a")) === 1)
-    }
-  }
 
   test("filter: 20 on set5") {
     new TestSets {
@@ -71,4 +72,10 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
+  test("large filter") {
+    new TestSets {
+      val myTweets = TweetReader.allTweets.filter((x: Tweet) => x.text.contains("android"))
+      assert(!myTweets.isEmpty)
+    }
   }
+}
