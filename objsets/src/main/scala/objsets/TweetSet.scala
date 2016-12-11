@@ -110,6 +110,8 @@ abstract class TweetSet {
     * This method takes a function and applies it to every element in the set.
     */
   def foreach(f: Tweet => Unit): Unit
+
+  def isEmpty: Boolean
 }
 
 class Empty extends TweetSet {
@@ -132,13 +134,18 @@ class Empty extends TweetSet {
 
   def max(x: Tweet): Tweet = x
 
+  def isEmpty = true
+
   override def union(that: TweetSet): TweetSet = that
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
-    if (p(elem)) remove(elem).filterAcc(p, acc incl elem)
+    if (p(elem)) {
+      val myAcc = acc incl elem
+      remove(elem).filterAcc(p, myAcc)
+    }
     else remove(elem).filterAcc(p, acc)
 
   }
@@ -154,7 +161,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   }
 
   override def union(that: TweetSet): TweetSet = {
-    (that union (left union right)) incl elem
+    if (that.isEmpty) this
+    else (that union (left union right)) incl elem
   }
 
   /**
@@ -183,6 +191,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     left.foreach(f)
     right.foreach(f)
   }
+
+  def isEmpty: Boolean = false
 }
 
 trait TweetList {
