@@ -75,7 +75,25 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] = ???
+    def times(chars: List[Char]): List[(Char, Int)] = {
+      def findChar(c: Char, xs: List[(Char, Int)]): List[(Char,Int)] = xs match {
+        case List() => {
+          val pair: (Char, Int) = (c, 1)
+          List(pair)
+        }
+        case y :: ys => if (c == y._1) {
+          val pair: (Char, Int) = (c, y._2 + 1)
+          pair :: ys
+          }
+        else { y :: findChar(c, ys) }
+      }
+      def loop(ys: List[Char], freq: List[(Char, Int)]): List[(Char, Int)] = {
+        val tempList: List[(Char, Int)] = findChar(ys.head, freq)
+        if (ys.nonEmpty) loop(ys.tail, tempList) else freq
+      }
+      val frequencyList: List[(Char, Int)] = List[(Char, Int)]()
+      loop(chars, frequencyList)
+    }
   
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
