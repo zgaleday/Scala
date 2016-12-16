@@ -28,6 +28,12 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("correct frequency list") {
+    val timesList: List[(Char, Int)] = times(List('a', 'b', 'a'))
+    assert(timesList.contains(('a', 2)))
+    assert(timesList.contains(('b', 1)))
+  }
+
 
   test("string2chars(\"hello, world\")") {
     assert(string2Chars("hello, world") === List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'))

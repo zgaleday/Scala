@@ -87,12 +87,8 @@ object Huffman {
           }
         else { y :: findChar(c, ys) }
       }
-      def loop(ys: List[Char], freq: List[(Char, Int)]): List[(Char, Int)] = {
-        val tempList: List[(Char, Int)] = findChar(ys.head, freq)
-        if (ys.nonEmpty) loop(ys.tail, tempList) else freq
+      while(chars.nonEmpty) 
       }
-      val frequencyList: List[(Char, Int)] = List[(Char, Int)]()
-      loop(chars, frequencyList)
     }
   
   /**
@@ -102,7 +98,13 @@ object Huffman {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+      def build: List[Leaf] = {
+        if (freqs.nonEmpty) Leaf(freqs.head._1, freqs.head._2) :: makeOrderedLeafList(freqs.tail)
+        else Nil
+      }
+      build.sortWith((a, b) => a.weight < b.weight)
+    }
   
   /**
    * Checks whether the list `trees` contains only one single code tree.
