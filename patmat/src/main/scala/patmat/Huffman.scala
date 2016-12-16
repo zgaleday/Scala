@@ -87,8 +87,10 @@ object Huffman {
           }
         else { y :: findChar(c, ys) }
       }
-      while(chars.nonEmpty) 
+      def loop(xs: List[Char], freq: List[(Char, Int)]): List[(Char, Int)] = {
+        if (xs.nonEmpty) loop(xs.tail, findChar(xs.head, freq)) else freq
       }
+      loop(chars, Nil)
     }
   
   /**
