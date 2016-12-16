@@ -125,7 +125,21 @@ object Huffman {
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
-    def combine(trees: List[CodeTree]): List[CodeTree] = ???
+    def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+
+      case x :: y :: Nil => trees
+      case Fork(l1, r1, c1, w1) :: Fork(l2, r2, c2,w2) :: ys =>
+        val myFork = Fork(trees.head, trees.tail.head, c1.union(c2), w1+w2)
+        insert(trees.drop(2), myFork)
+
+
+    }
+
+  def insert(trees: List[CodeTree], tree: CodeTree): List[CodeTree] = {
+    if (trees.isEmpty) List(tree)
+    else if (weight(trees.head) < weight(tree)) tree :: trees
+    else trees.head :: insert(trees.tail, tree)
+  }
   
   /**
    * This function will be called in the following way:
