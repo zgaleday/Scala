@@ -111,7 +111,7 @@ object Huffman {
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-    def singleton(trees: List[CodeTree]): Boolean = trees.tail.isEmpty
+    def singleton(trees: List[CodeTree]): Boolean = if (trees.nonEmpty) trees.tail.isEmpty else false
   
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -210,7 +210,7 @@ object Huffman {
    * Write a function that returns the decoded secret
    */
   def decodedSecret: List[Char] = decode(frenchCode, secret)
-  
+
   // Part 4a: Encoding using Huffman tree
 
   /**
