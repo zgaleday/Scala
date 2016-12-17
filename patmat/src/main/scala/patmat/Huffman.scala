@@ -185,7 +185,13 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-    def decode(tree: CodeTree, bits: List[Bit]): List[Char] = ???
+    def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
+      def traverse(subTree: CodeTree, subBits: List[Bit]): List[Char] = subTree match {
+        case Leaf(char, weight) => if (subBits.nonEmpty) char :: traverse(tree, subBits) else List(char)
+        case Fork(l, r, c, w) => if (subBits.head == 0) traverse(l, subBits.tail) else traverse(r, subBits.tail)
+      }
+      traverse(tree, bits)
+    }
   
   /**
    * A Huffman coding tree for the French language.
@@ -196,16 +202,16 @@ object Huffman {
 
   /**
    * What does the secret message say? Can you decode it?
-   * For the decoding use the `frenchCode' Huffman tree defined above.
+   * For the decoding use the 'frenchCode' Huffman tree defined above.
    */
   val secret: List[Bit] = List(0,0,1,1,1,0,1,0,1,1,1,0,0,1,1,0,1,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1)
 
   /**
    * Write a function that returns the decoded secret
    */
-    def decodedSecret: List[Char] = ???
+  def decodedSecret: List[Char] = decode(frenchCode, secret)
   
-
+  println(decodedSecret)
   // Part 4a: Encoding using Huffman tree
 
   /**
@@ -249,3 +255,4 @@ object Huffman {
    */
     def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
   }
+
