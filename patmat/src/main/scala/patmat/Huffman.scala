@@ -128,8 +128,8 @@ object Huffman {
     def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
 
       case x :: y :: Nil => trees
-      case Fork(l1, r1, c1, w1) :: Fork(l2, r2, c2,w2) :: ys =>
-        val myFork = Fork(trees.head, trees.tail.head, c1.union(c2), w1+w2)
+      case x1 :: x2 :: xs =>
+        val myFork = Fork(x1, x2, chars(x1) union chars(x2), weight(x1) + weight(x2))
         insert(trees.drop(2), myFork)
 
 
