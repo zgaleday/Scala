@@ -127,7 +127,8 @@ object Huffman {
    */
     def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
 
-      case x :: y :: Nil => trees
+      case Nil => trees
+      case x :: Nil => trees
       case x1 :: x2 :: xs =>
         val myFork = Fork(x1, x2, chars(x1) union chars(x2), weight(x1) + weight(x2))
         insert(trees.drop(2), myFork)
@@ -158,7 +159,10 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-    def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+    def until(test: List[CodeTree] => Boolean, op: List[CodeTree] => List[CodeTree])
+             (trees: List[CodeTree]): List[CodeTree] = {
+      if (test(trees)) trees else until(test, op)(op(trees))
+    }
   
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
