@@ -237,7 +237,10 @@ object Huffman {
    * This function returns the bit sequence that represents the character `char` in
    * the code table `table`.
    */
-    def codeBits(table: CodeTable)(char: Char): List[Bit] = ???
+    def codeBits(table: CodeTable)(char: Char): List[Bit] = table match {
+      case Nil => Nil
+      case (c, bits) :: xs => if (c == char) bits else codeBits(xs)(char)
+    }
   
   /**
    * Given a code tree, create a code table which contains, for every character in the
@@ -247,8 +250,15 @@ object Huffman {
    * a valid code tree that can be represented as a code table. Using the code tables of the
    * sub-trees, think of how to build the code table for the entire tree.
    */
-    def convert(tree: CodeTree): CodeTable = ???
-  
+    def convert(tree: CodeTree): CodeTable = {
+      def traverse(subTree: CodeTree,bits: List[Bit]): List[(Char, List[Bit])] = subTree match {
+        case Fork(l, r, c, w) => traverse(l, 0 :: bits) union traverse(r, 1 :: bits)
+        case Leaf(c, w) => List((c, bits.reverse))
+      }
+      traverse(tree, Nil)
+    }
+
+
   /**
    * This function takes two code tables and merges them into one. Depending on how you
    * use it in the `convert` method above, this merge method might also do some transformations
