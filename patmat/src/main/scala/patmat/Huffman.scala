@@ -277,7 +277,7 @@ object Huffman {
       def encode(table: CodeTable)(text: List[Char]): List[Bit] = text match {
         case Nil => Nil
         case x :: Nil => codeBits(table)(x)
-        case x :: xs => codeBits(table)(x) ++ encode(table)(xs)
+        case x :: xs => codeBits(table)(x) ::: encode(table)(xs)
       }
       encode(table)(text)
     }
