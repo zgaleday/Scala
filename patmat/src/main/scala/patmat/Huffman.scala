@@ -138,7 +138,7 @@ object Huffman {
 
   def insert(trees: List[CodeTree], tree: CodeTree): List[CodeTree] = {
     if (trees.isEmpty) List(tree)
-    else if (weight(trees.head) < weight(tree)) tree :: trees
+    else if (weight(trees.head) > weight(tree)) tree :: trees
     else trees.head :: insert(trees.tail, tree)
   }
   
@@ -170,7 +170,11 @@ object Huffman {
    * The parameter `chars` is an arbitrary text. This function extracts the character
    * frequencies from that text and creates a code tree based on them.
    */
-    def createCodeTree(chars: List[Char]): CodeTree = ???
+    def createCodeTree(chars: List[Char]): CodeTree = {
+      val frequencies = times(chars)
+      val leafList = makeOrderedLeafList(frequencies)
+      until(singleton, combine)(leafList).head
+    }
   
 
   // Part 3: Decoding
