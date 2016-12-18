@@ -42,7 +42,11 @@ object Anagrams {
 
 
   /** Converts a sentence into its character occurrence list. */
-  def sentenceOccurrences(s: Sentence): Occurrences = ???
+  def sentenceOccurrences(s: Sentence): Occurrences = {
+    val flat = s flatMap (w => w.toLowerCase)
+    val occurMap = flat groupBy ((element: Char) => element) map{ case (c, l) => (c, l.length)}
+    occurMap.toList.sorted
+  }
 
   /** The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
    *  the words that have that occurrence count.
