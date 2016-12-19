@@ -120,15 +120,16 @@ object Anagrams {
    *  and has no zero-entries.
    */
   def subtract(x: Occurrences, y: Occurrences): Occurrences = y match {
-    case Nil => x
+    case List() => x
     case y1 :: ys1 =>
       val (key, value) = x.head
       if (y1._1 == key) {
-        val sub = value - y1._1
+        val sub = value - y1._2
         if (sub > 0) (key, sub) :: subtract(x.tail, ys1)
         else subtract(x.tail, ys1)
       }
-      else { x.head :: subtract(x.tail, y)}
+      else {
+        x.head :: subtract(x.tail, y)}
   }
 
   /** Returns a list of all anagram sentences of the given sentence.

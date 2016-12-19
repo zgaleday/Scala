@@ -46,6 +46,12 @@ class AnagramsSuite extends FunSuite  {
     assert(subtract(lard, r) === lad)
   }
 
+  test("subtract: assessment - assess") {
+    val assessment = wordOccurrences("assessment")
+    val assess = wordOccurrences("assess")
+    val ment = wordOccurrences("ment")
+    assert(subtract(assessment, assess) === ment)
+  }
 
   test("combinations: []") {
     assert(combinations(Nil) === List(Nil))
@@ -73,6 +79,7 @@ class AnagramsSuite extends FunSuite  {
     assert(sentenceAnagrams(sentence) === List(Nil))
   }
 
+
   test("sentence anagrams: Linux rulez") {
     val sentence = List("Linux", "rulez")
     val anas = List(
@@ -97,8 +104,7 @@ class AnagramsSuite extends FunSuite  {
       List("rulez", "Linux"),
       List("Linux", "rulez")
     )
-    assert((sentenceAnagrams(sentence).toSet filter (sent => sent.head == "Rex"))
-      === (anas filter (sent => sent.head == "Rex")).toSet)
+    assert(sentenceAnagrams(sentence).toSet === anas.toSet)
     assert(sentenceAnagrams(sentence).length === anas.length)
   }
 
