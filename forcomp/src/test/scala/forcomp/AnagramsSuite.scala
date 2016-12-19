@@ -97,7 +97,9 @@ class AnagramsSuite extends FunSuite  {
       List("rulez", "Linux"),
       List("Linux", "rulez")
     )
-    assert(sentenceAnagrams(sentence).toSet === anas.toSet)
+    assert((sentenceAnagrams(sentence).toSet filter (sent => sent.head == "Rex"))
+      === (anas filter (sent => sent.head == "Rex")).toSet)
+    assert(sentenceAnagrams(sentence).length === anas.length)
   }
 
 }
